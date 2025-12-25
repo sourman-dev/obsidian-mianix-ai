@@ -1,0 +1,10 @@
+{
+  "id": "mianix-roleplay",
+  "name": "Mianix Roleplay",
+  "version": "0.1.0",
+  "minAppVersion": "1.0.0",
+  "description": "AI roleplay with character cards and LLM integration",
+  "author": "Mianix",
+  "authorUrl": "https://github.com/mianix",
+  "isDesktopOnly": false
+}
