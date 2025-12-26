@@ -48,14 +48,15 @@ export interface MianixSettings {
   extractionModel?: LLMProviderConfig;
 }
 
-/** Default settings */
+/** Default settings - imported from migration utility */
+export { getDefaultSettings } from '../utils/settings-migration';
+
+/** Default settings constant for backward compatibility */
 export const DEFAULT_SETTINGS: MianixSettings = {
-  // New fields (optional until migration)
   providers: [],
   defaults: {
     text: { providerId: '', model: '' },
   },
-  // Legacy fields (required for existing code)
   llm: {
     baseUrl: 'https://api.openai.com/v1',
     apiKey: '',

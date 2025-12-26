@@ -4,6 +4,7 @@ import { MianixSettings, DEFAULT_SETTINGS } from './types';
 import { RoleplayView } from './views/roleplay-view';
 import { MianixSettingTab } from './settings-tab';
 import { PresetService } from './services/preset-service';
+import { migrateSettings } from './utils/settings-migration';
 
 export default class MianixRoleplayPlugin extends Plugin {
   settings: MianixSettings = DEFAULT_SETTINGS;
@@ -49,7 +50,9 @@ export default class MianixRoleplayPlugin extends Plugin {
   }
 
   async loadSettings(): Promise<void> {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const data = await this.loadData();
+    // Migrate legacy settings to new multi-provider format
+    this.settings = migrateSettings(data);
   }
 
   async saveSettings(): Promise<void> {

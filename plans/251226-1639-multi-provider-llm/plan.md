@@ -33,7 +33,7 @@ Refactor LLM system từ single provider sang multi-provider với:
 | Phase | Description | Status | Effort | Completed |
 |-------|-------------|--------|--------|-----------|
 | [Phase 1](./phase-01-provider-types.md) | Type definitions & provider presets | Done | 1h | 2025-12-26 |
-| [Phase 2](./phase-02-settings-migration.md) | Settings migration & storage | Pending | 1.5h | - |
+| [Phase 2](./phase-02-settings-migration.md) | Settings migration & storage | Done | 1.5h | 2025-12-26 |
 | [Phase 3](./phase-03-model-fetcher.md) | Model fetcher service | Pending | 1.5h | - |
 | [Phase 4](./phase-04-settings-ui.md) | Settings tab UI refactor | Pending | 2h | - |
 | [Phase 5](./phase-05-llm-service-refactor.md) | LLM service refactor | Pending | 1.5h | - |
@@ -96,7 +96,7 @@ DialogueMessage (per-turn)
 ### Action Items
 
 - [x] Phase 1: Thêm `authHeader?: string` field vào `LLMProvider` interface ✅
-- [ ] Phase 2: Sử dụng `crypto.randomUUID()` thay vì `uuid` package
+- [x] Phase 2: Sử dụng `crypto.randomUUID()` thay vì `uuid` package ✅
 - [ ] Phase 3: Tăng cache TTL lên 30 phút, thêm logic riêng cho Google AI models endpoint
 - [ ] Future: Implement error/alert notification system (popup, toast)
 
@@ -114,3 +114,18 @@ DialogueMessage (per-turn)
 - Removed redundant `type` field from `LLMProvider` (DRY principle)
 - Added `defaultModel` field for better UX
 - Added `authHeader` field to support multiple auth types
+
+**Phase 2 (Completed 2025-12-26)**
+- ✅ Created `src/utils/settings-migration.ts` with migration logic
+- ✅ Used `crypto.randomUUID()` for provider IDs (no external dependency)
+- ✅ Updated `src/types/index.ts` to export `getDefaultSettings()`
+- ✅ Updated `src/main.ts` to use `migrateSettings()` in loadSettings()
+- ✅ Backward compatibility preserved with legacy field retention
+- ✅ Build and typecheck passed (0 errors)
+- ✅ Code review passed - [Report](../reports/code-reviewer-251226-1937-settings-migration.md)
+
+**Implementation improvements over spec:**
+- Added `mergeWithDefaults()` for robust settings handling
+- Enhanced preset detection with PROVIDER_PRESETS integration
+- Added `isNewFormat()` type guard for cleaner migration detection
+- Better error handling for edge cases (empty data, missing fields)
