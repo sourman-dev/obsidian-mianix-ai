@@ -142,55 +142,41 @@ export function CharacterList() {
       {characters.length === 0 ? (
         <div className="mianix-empty-state">
           <p>No characters yet.</p>
-          <button onClick={handleImportClick}>Import PNG Card</button>
-          <button onClick={handleCreate}>Create Manually</button>
+          <p className="mianix-empty-hint">Use the buttons above to import or create a character.</p>
         </div>
       ) : (
-        <div className="mianix-character-list">
-          {characters.map((char) => (
-            <div
-              key={char.id}
-              className={`mianix-character-item ${currentCharacter?.id === char.id ? 'is-active' : ''}`}
-              onClick={() => setCurrentCharacter(char)}
-            >
-              <div className="mianix-character-avatar">
-                {char.avatarUrl ? (
-                  <img src={char.avatarUrl} alt={char.name} />
-                ) : (
-                  <div className="mianix-avatar-placeholder">
-                    {char.name.charAt(0).toUpperCase()}
-                  </div>
-                )}
-              </div>
-              <div className="mianix-character-info">
-                <span className="mianix-character-name">{char.name}</span>
-                <span className="mianix-character-desc">
-                  {char.description.slice(0, 40) || 'No description'}
-                  {char.description.length > 40 ? '...' : ''}
-                </span>
-              </div>
-              <div className="mianix-character-actions">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEdit(char);
-                  }}
-                  title="Edit"
-                >
-                  ✎
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setDeleteConfirm(char.folderPath);
-                  }}
-                  title="Delete"
-                >
-                  ✕
-                </button>
-              </div>
+        <div className="mianix-character-selector">
+          <select
+            className="mianix-character-select"
+            value={currentCharacter?.id || ''}
+            onChange={(e) => {
+              const selected = characters.find((c) => c.id === e.target.value);
+              setCurrentCharacter(selected || null);
+            }}
+          >
+            <option value="">-- Select character --</option>
+            {characters.map((char) => (
+              <option key={char.id} value={char.id}>
+                {char.name}
+              </option>
+            ))}
+          </select>
+          {currentCharacter && (
+            <div className="mianix-selected-actions">
+              <button
+                onClick={() => handleEdit(currentCharacter)}
+                title="Edit"
+              >
+                ✎
+              </button>
+              <button
+                onClick={() => setDeleteConfirm(currentCharacter.folderPath)}
+                title="Delete"
+              >
+                ✕
+              </button>
             </div>
-          ))}
+          )}
         </div>
       )}
 
