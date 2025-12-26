@@ -1,13 +1,13 @@
 {
   "name": "talevault-ai",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Obsidian roleplay plugin with AI character cards",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
     "build": "node esbuild.config.mjs production",
     "typecheck": "tsc --noEmit",
-    "install-plugin": "pnpm build && cp main.js manifest.json styles.css /Users/uspro/Data/obsidian-mianix-ai-vault/Mianix/.obsidian/plugins/mianix-roleplay/"
+    "install-plugin": "pnpm build && mkdir -p /Users/uspro/Data/obsidian-mianix-ai-vault/Mianix/.obsidian/plugins/mianix-roleplay && cp main.js manifest.json styles.css /Users/uspro/Data/obsidian-mianix-ai-vault/Mianix/.obsidian/plugins/mianix-roleplay/"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

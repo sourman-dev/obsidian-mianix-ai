@@ -2,7 +2,7 @@
 
 An AI-powered roleplay companion plugin for Obsidian. Chat with AI characters, import character cards, and have immersive conversations - all stored as markdown files in your vault.
 
-**Version:** 0.2.0 | **Author:** Sourman | **License:** MIT
+**Version:** 0.2.1 | **Author:** Sourman | **License:** MIT
 
 ## Features
 

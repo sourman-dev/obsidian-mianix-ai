@@ -20,7 +20,7 @@ export class RoleplayView extends ItemView {
   }
 
   getDisplayText(): string {
-    return 'Mianix Roleplay';
+    return 'TaleVault AI';
   }
 
   getIcon(): string {

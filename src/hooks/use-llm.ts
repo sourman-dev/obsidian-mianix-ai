@@ -52,7 +52,7 @@ export function useLlm() {
       llmOptions: LLMOptions = DEFAULT_LLM_OPTIONS
     ) => {
       if (!isConfigured()) {
-        setError('No LLM provider configured. Go to Settings > Mianix Roleplay.');
+        setError('No LLM provider configured. Go to Settings > TaleVault AI.');
         return;
       }
 

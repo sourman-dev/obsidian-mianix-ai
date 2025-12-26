@@ -25,7 +25,7 @@ export default class MianixRoleplayPlugin extends Plugin {
       );
 
       // Add ribbon icon
-      this.addRibbonIcon('message-square', 'Mianix Roleplay', () => {
+      this.addRibbonIcon('message-square', 'TaleVault AI', () => {
         this.activateView();
       });
 
@@ -51,12 +51,12 @@ export default class MianixRoleplayPlugin extends Plugin {
 
       console.log('TaleVault AI plugin loaded');
     } catch (error) {
-      console.error('Mianix Roleplay plugin failed to load:', error);
+      console.error('TaleVault AI plugin failed to load:', error);
     }
   }
 
   async onunload(): Promise<void> {
-    console.log('Mianix Roleplay plugin unloaded');
+    console.log('TaleVault AI plugin unloaded');
   }
 
   async loadSettings(): Promise<void> {

@@ -15,7 +15,7 @@ export class MianixSettingTab extends PluginSettingTab {
   display(): void {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl('h2', { text: 'Mianix Roleplay Settings' });
+    containerEl.createEl('h2', { text: 'TaleVault AI Settings' });
 
     // Provider Management Section
     this.renderProviderList();
