@@ -6,6 +6,7 @@ import type { CharacterCard, CharacterCardWithPath, CharacterFormData } from '..
 import { generateUniqueSlug } from '../utils/slug';
 import { getAvatarResourceUrl } from '../utils/avatar';
 import { parsePngCharacterCard, type CharacterCardData } from '../utils/png-parser';
+import { DialogueService } from './dialogue-service';
 
 export class CharacterService {
   constructor(private app: App) {}
@@ -17,12 +18,10 @@ export class CharacterService {
     const { vault } = this.app;
     const charactersPath = normalizePath(CHARACTERS_FOLDER);
 
-    // Ensure folder exists
-    let folder = vault.getAbstractFileByPath(charactersPath);
-    if (!folder) {
-      await vault.createFolder(charactersPath);
-      return [];
-    }
+    // Ensure folder exists (creates parent folders if needed)
+    await this.ensureFolderExists(charactersPath);
+
+    const folder = vault.getAbstractFileByPath(charactersPath);
     if (!(folder instanceof TFolder)) {
       return [];
     }
@@ -215,6 +214,15 @@ export class CharacterService {
     const content = matter.stringify(bodyContent, character);
     await vault.create(cardFilePath, content);
 
+    // Initialize dialogue session for this character
+    const dialogueService = new DialogueService(this.app);
+    await dialogueService.initializeSession(folderPath, character.id);
+
+    // Create first message if exists
+    if (cardData.first_mes) {
+      await dialogueService.createFirstMessage(folderPath, cardData.first_mes);
+    }
+
     // Get avatar URL for display
     const avatarUrl = getAvatarResourceUrl(this.app, folderPath, 'avatar.png');
 
@@ -273,10 +281,23 @@ export class CharacterService {
       .map((f) => f.name);
   }
 
+  /**
+   * Ensure folder exists, creating parent folders if needed
+   */
   private async ensureFolderExists(path: string): Promise<void> {
-    const exists = this.app.vault.getAbstractFileByPath(path);
-    if (!exists) {
-      await this.app.vault.createFolder(path);
+    const parts = path.split('/');
+    let current = '';
+
+    for (const part of parts) {
+      current = current ? `${current}/${part}` : part;
+      const exists = this.app.vault.getAbstractFileByPath(current);
+      if (!exists) {
+        try {
+          await this.app.vault.createFolder(current);
+        } catch {
+          // Folder may have been created by another call, ignore
+        }
+      }
     }
   }
 }

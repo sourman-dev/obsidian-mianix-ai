@@ -3,35 +3,45 @@ import { VIEW_TYPE_ROLEPLAY } from './constants';
 import { MianixSettings, DEFAULT_SETTINGS } from './types';
 import { RoleplayView } from './views/roleplay-view';
 import { MianixSettingTab } from './settings-tab';
+import { PresetService } from './services/preset-service';
 
 export default class MianixRoleplayPlugin extends Plugin {
   settings: MianixSettings = DEFAULT_SETTINGS;
+  presetService!: PresetService;
 
   async onload(): Promise<void> {
-    await this.loadSettings();
+    try {
+      await this.loadSettings();
 
-    // Register custom view
-    this.registerView(
-      VIEW_TYPE_ROLEPLAY,
-      (leaf) => new RoleplayView(leaf, this)
-    );
+      // Initialize preset service and create default presets
+      this.presetService = new PresetService(this.app);
+      await this.presetService.initializePresets();
 
-    // Add ribbon icon
-    this.addRibbonIcon('message-square', 'Mianix Roleplay', () => {
-      this.activateView();
-    });
+      // Register custom view
+      this.registerView(
+        VIEW_TYPE_ROLEPLAY,
+        (leaf) => new RoleplayView(leaf, this)
+      );
 
-    // Add settings tab
-    this.addSettingTab(new MianixSettingTab(this.app, this));
+      // Add ribbon icon
+      this.addRibbonIcon('message-square', 'Mianix Roleplay', () => {
+        this.activateView();
+      });
 
-    // Add command to open view
-    this.addCommand({
-      id: 'open-roleplay-view',
-      name: 'Open Roleplay View',
-      callback: () => this.activateView(),
-    });
+      // Add settings tab
+      this.addSettingTab(new MianixSettingTab(this.app, this));
 
-    console.log('Mianix Roleplay plugin loaded');
+      // Add command to open view
+      this.addCommand({
+        id: 'open-roleplay-view',
+        name: 'Open Roleplay View',
+        callback: () => this.activateView(),
+      });
+
+      console.log('Mianix Roleplay plugin loaded');
+    } catch (error) {
+      console.error('Mianix Roleplay plugin failed to load:', error);
+    }
   }
 
   async onunload(): Promise<void> {

@@ -548,3 +548,750 @@
 .mianix-error-text button {
   margin-top: 8px;
 }
+
+/* ===== Chat View ===== */
+.mianix-chat-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mianix-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  flex-shrink: 0;
+}
+
+.mianix-chat-character {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mianix-chat-header .mianix-chat-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mianix-chat-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.mianix-new-chat-button {
+  padding: 4px 10px;
+  font-size: 12px;
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.mianix-new-chat-button:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+/* ===== Message List ===== */
+.mianix-message-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mianix-message-list.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Message Item ===== */
+.mianix-message {
+  display: flex;
+  gap: 8px;
+  max-width: 85%;
+}
+
+.mianix-message.user {
+  flex-direction: row-reverse;
+  align-self: flex-end;
+}
+
+.mianix-message.assistant {
+  align-self: flex-start;
+}
+
+.mianix-message-avatar {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.mianix-message-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mianix-message-avatar .mianix-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mianix-message-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mianix-message-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.mianix-message-text {
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.mianix-message.user .mianix-message-text {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border-bottom-right-radius: 4px;
+}
+
+.mianix-message.assistant .mianix-message-text {
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  border-bottom-left-radius: 4px;
+}
+
+.mianix-message-time {
+  font-size: 10px;
+  color: var(--text-faint);
+  padding: 0 4px;
+}
+
+.mianix-message.user .mianix-message-time {
+  text-align: right;
+}
+
+/* ===== Typing Indicator ===== */
+.mianix-typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 12px 16px;
+}
+
+.mianix-typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background: var(--text-muted);
+  border-radius: 50%;
+  animation: typing-bounce 1.4s infinite ease-in-out;
+}
+
+.mianix-typing-indicator span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.mianix-typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.mianix-typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing-bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+}
+
+/* ===== Message Input ===== */
+.mianix-message-input {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--background-modifier-border);
+  background: var(--background-primary);
+  flex-shrink: 0;
+}
+
+.mianix-message-input textarea {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 20px;
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  font-family: inherit;
+  font-size: 14px;
+  resize: none;
+  min-height: 36px;
+  max-height: 120px;
+  line-height: 1.4;
+}
+
+.mianix-message-input textarea:focus {
+  outline: none;
+  border-color: var(--interactive-accent);
+}
+
+.mianix-message-input textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mianix-send-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.mianix-send-button:hover:not(:disabled) {
+  background: var(--interactive-accent-hover);
+}
+
+.mianix-send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== Message Actions ===== */
+.mianix-message-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.mianix-message-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.mianix-message:hover .mianix-message-actions {
+  opacity: 1;
+}
+
+.mianix-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.mianix-action-btn:hover {
+  background: var(--background-modifier-hover);
+}
+
+.mianix-action-danger:hover {
+  background: var(--background-modifier-error);
+}
+
+/* ===== Message Edit ===== */
+.mianix-message-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mianix-message-edit textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.mianix-message-edit textarea:focus {
+  outline: none;
+  border-color: var(--interactive-accent);
+}
+
+.mianix-edit-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.mianix-btn-save,
+.mianix-btn-cancel {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+}
+
+.mianix-btn-save {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+.mianix-btn-save:hover {
+  background: var(--interactive-accent-hover);
+}
+
+.mianix-btn-cancel {
+  background: var(--background-secondary);
+  color: var(--text-muted);
+  border: 1px solid var(--background-modifier-border);
+}
+
+.mianix-btn-cancel:hover {
+  background: var(--background-modifier-hover);
+}
+
+/* ===== LLM Options Panel ===== */
+.mianix-llm-options {
+  position: relative;
+}
+
+.mianix-llm-options-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.mianix-llm-options-toggle:hover {
+  background: var(--background-modifier-hover);
+}
+
+.mianix-llm-options-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 240px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+}
+
+.mianix-option-row {
+  margin-bottom: 12px;
+}
+
+.mianix-option-row:last-child {
+  margin-bottom: 0;
+}
+
+.mianix-option-row label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.mianix-option-value {
+  font-weight: 600;
+  color: var(--text-normal);
+}
+
+.mianix-option-row input[type="range"] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--background-modifier-border);
+  border-radius: 2px;
+  outline: none;
+}
+
+.mianix-option-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--interactive-accent);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.mianix-option-row input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.mianix-option-row input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--interactive-accent);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.mianix-option-row input[type="range"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mianix-option-row input[type="range"]:disabled::-webkit-slider-thumb {
+  cursor: not-allowed;
+}
+
+/* ===== Chat Status Area ===== */
+.mianix-chat-status {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mianix-ready-state {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.mianix-loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* ===== Streaming Preview ===== */
+.mianix-streaming-preview {
+  background: var(--background-secondary);
+  border-radius: 12px;
+  padding: 12px;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.mianix-streaming-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.mianix-mini-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mianix-streaming-text {
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text-normal);
+}
+
+/* ===== Input Area ===== */
+.mianix-input-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--background-modifier-border);
+  background: var(--background-primary);
+  flex-shrink: 0;
+}
+
+/* ===== Suggested Prompts ===== */
+.mianix-suggested-prompts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 0;
+  flex-wrap: wrap;
+}
+
+.mianix-suggested-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.mianix-suggested-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mianix-suggested-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 16px;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.15s;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mianix-suggested-btn:hover:not(:disabled) {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border-color: var(--interactive-accent);
+}
+
+.mianix-suggested-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== Suggestions Dropdown (Mobile-first) ===== */
+.mianix-suggestions-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.mianix-suggestions-dropdown label {
+  font-size: 12px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.mianix-suggestions-dropdown select {
+  flex: 1;
+  padding: 6px 8px;
+  font-size: 13px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  cursor: pointer;
+  min-width: 0;
+}
+
+.mianix-suggestions-dropdown select:focus {
+  outline: none;
+  border-color: var(--interactive-accent);
+}
+
+.mianix-suggestions-dropdown select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== Message Link (for AI responses) ===== */
+.mianix-message-link-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mianix-message-link {
+  display: block;
+  padding: 8px 12px;
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  color: var(--text-normal);
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+  word-break: break-word;
+}
+
+.mianix-message-link:hover {
+  background: var(--background-modifier-hover);
+  border-color: var(--interactive-accent);
+}
+
+/* ===== Waiting State ===== */
+.mianix-waiting-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--background-secondary);
+  border-radius: 8px;
+}
+
+.mianix-waiting-text {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ===== Streaming Text (inline in message) ===== */
+.mianix-message-content .mianix-streaming-text {
+  padding: 8px 12px;
+  background: var(--background-secondary);
+  border-radius: 12px;
+  border-bottom-left-radius: 4px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ===== Mobile-First Responsive Design ===== */
+
+/* Base: Mobile (default) */
+.mianix-layout {
+  flex-direction: column;
+}
+
+.mianix-sidebar {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  border-right: none;
+  border-bottom: 1px solid var(--background-modifier-border);
+  max-height: 40vh;
+}
+
+.mianix-message {
+  max-width: 90%;
+}
+
+.mianix-message-actions {
+  opacity: 1; /* Always visible on mobile */
+}
+
+.mianix-character-actions {
+  opacity: 1; /* Always visible on mobile */
+}
+
+/* Tablet and up (min-width: 600px) */
+@media (min-width: 600px) {
+  .mianix-layout {
+    flex-direction: row;
+  }
+
+  .mianix-sidebar {
+    width: 200px;
+    min-width: 150px;
+    max-width: 250px;
+    max-height: none;
+    border-right: 1px solid var(--background-modifier-border);
+    border-bottom: none;
+  }
+
+  .mianix-message {
+    max-width: 85%;
+  }
+
+  .mianix-message-actions {
+    opacity: 0;
+  }
+
+  .mianix-message:hover .mianix-message-actions {
+    opacity: 1;
+  }
+
+  .mianix-character-actions {
+    opacity: 0;
+  }
+
+  .mianix-character-item:hover .mianix-character-actions {
+    opacity: 1;
+  }
+}
+
+/* Desktop (min-width: 900px) */
+@media (min-width: 900px) {
+  .mianix-sidebar {
+    width: 220px;
+    max-width: 300px;
+  }
+
+  .mianix-message {
+    max-width: 80%;
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (hover: none) {
+  .mianix-action-btn {
+    min-width: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mianix-send-button {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .mianix-message-input textarea {
+    min-height: 44px;
+    font-size: 16px; /* Prevent iOS zoom */
+  }
+
+  .mianix-suggestions-dropdown select {
+    min-height: 44px;
+    font-size: 16px;
+  }
+}
