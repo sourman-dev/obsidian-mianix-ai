@@ -86,6 +86,8 @@ export function CharacterList() {
       const arrayBuffer = await file.arrayBuffer();
       const imported = await importFromPng(arrayBuffer);
       if (imported) {
+        // Reload list to get fresh data with correct avatarUrl
+        await reload();
         setCurrentCharacter(imported);
       }
     } catch (err) {

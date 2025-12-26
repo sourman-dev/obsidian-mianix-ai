@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CHARACTERS_FOLDER } from '../constants';
 import type { CharacterCard, CharacterCardWithPath, CharacterFormData } from '../types';
 import { generateUniqueSlug } from '../utils/slug';
-import { getAvatarResourceUrl } from '../utils/avatar';
+import { loadAvatarAsDataUrl } from '../utils/avatar';
 import { parsePngCharacterCard, type CharacterCardData } from '../utils/png-parser';
 import { DialogueService } from './dialogue-service';
 
@@ -223,8 +223,8 @@ export class CharacterService {
       await dialogueService.createFirstMessage(folderPath, cardData.first_mes);
     }
 
-    // Get avatar URL for display
-    const avatarUrl = getAvatarResourceUrl(this.app, folderPath, 'avatar.png');
+    // Get avatar URL for display (use data URL for mobile compatibility)
+    const avatarUrl = await loadAvatarAsDataUrl(this.app, folderPath, 'avatar.png');
 
     return {
       ...character,
@@ -248,9 +248,9 @@ export class CharacterService {
       return null;
     }
 
-    // Get avatar URL if avatar field exists
+    // Get avatar URL if avatar field exists (use data URL for mobile compatibility)
     const avatarUrl = data.avatar
-      ? getAvatarResourceUrl(this.app, folderPath, data.avatar)
+      ? await loadAvatarAsDataUrl(this.app, folderPath, data.avatar)
       : undefined;
 
     return {
