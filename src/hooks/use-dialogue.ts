@@ -216,6 +216,14 @@ export function useDialogue(character: CharacterCardWithPath | null) {
     [characterFolderPath, service]
   );
 
+  // Reload message content from file (for regenerate after user edits)
+  const reloadMessageContent = useCallback(
+    async (filePath: string): Promise<string | null> => {
+      return service.reloadMessageContent(filePath);
+    },
+    [service]
+  );
+
   return {
     messages,
     characterFolderPath,
@@ -229,5 +237,6 @@ export function useDialogue(character: CharacterCardWithPath | null) {
     deleteMessage,
     deleteMessagesFrom,
     updateLLMOptions,
+    reloadMessageContent,
   };
 }

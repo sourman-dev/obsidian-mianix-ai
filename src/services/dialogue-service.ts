@@ -370,6 +370,18 @@ export class DialogueService {
     return this.indexService;
   }
 
+  /**
+   * Reload message content from file (for regenerate after user edits)
+   */
+  async reloadMessageContent(filePath: string): Promise<string | null> {
+    const file = this.app.vault.getAbstractFileByPath(filePath);
+    if (!(file instanceof TFile)) return null;
+
+    const rawContent = await this.app.vault.read(file);
+    const { content: body } = parseFrontmatter(rawContent);
+    return body.trim();
+  }
+
   // --- Private helpers ---
 
   private async readMessageFile(

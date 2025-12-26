@@ -27,8 +27,8 @@ export function ChatView({ character }: ChatViewProps) {
     addAssistantMessage,
     saveSuggestions,
     deleteMessage,
-    deleteMessagesFrom,
     updateLLMOptions,
+    reloadMessageContent,
   } = useDialogue(character);
 
   const {
@@ -50,8 +50,8 @@ export function ChatView({ character }: ChatViewProps) {
   // Parse "Gợi ý" section from LLM response
   // Format: > **Gợi ý:** [action1] [action2] [action3]
   const parseSuggestedPrompts = useCallback((response: string): string[] => {
-    // Match the Gợi ý line
-    const goiYMatch = response.match(/>\s*\*\*Gợi ý:\*\*\s*(.+?)(?:\n|$)/s);
+    // Match the Gợi ý line - greedy match to get entire line
+    const goiYMatch = response.match(/>\s*\*\*Gợi ý:\*\*\s*(.+)$/m);
     if (!goiYMatch) return [];
 
     const goiYSection = goiYMatch[1];
@@ -75,27 +75,46 @@ export function ChatView({ character }: ChatViewProps) {
   }, []);
 
   // Regenerate latest turn - triggered by command palette or button
+  // Keeps user message, deletes only assistant response, then regenerates
+  // IMPORTANT: Reloads user message content from file in case user edited it
   const regenerateLatestTurn = useCallback(async () => {
     if (!character || !characterFolderPath || isGenerating || isLoading) return;
 
-    // Get fresh messages from store to avoid stale closure
+    // Get fresh messages from store
     const currentMessages = [...messages];
-    const latestUserMsg = currentMessages.reverse().find((m) => m.role === 'user');
-    if (!latestUserMsg) return;
 
-    // Delete from user message onwards (including its response)
-    const remaining = await deleteMessagesFrom(latestUserMsg.filePath);
+    // Find latest user message index
+    let latestUserIdx = -1;
+    for (let i = currentMessages.length - 1; i >= 0; i--) {
+      if (currentMessages[i].role === 'user') {
+        latestUserIdx = i;
+        break;
+      }
+    }
+    if (latestUserIdx === -1) return;
+
+    const latestUserMsg = currentMessages[latestUserIdx];
 
     // Reload user message content from file (in case user edited it)
-    const userFile = app.vault.getAbstractFileByPath(latestUserMsg.filePath);
-    if (!userFile) return;
+    const freshContent = await reloadMessageContent(latestUserMsg.filePath);
+    if (freshContent) {
+      latestUserMsg.content = freshContent;
+    }
 
-    // Re-read the message to get potentially edited content
-    const reloadedMessages = remaining;
+    // Find assistant response after the user message (if exists)
+    const assistantAfterUser = currentMessages[latestUserIdx + 1];
+
+    // Delete only the assistant response (not the user message)
+    if (assistantAfterUser && assistantAfterUser.role === 'assistant') {
+      await deleteMessage(assistantAfterUser.filePath);
+    }
+
+    // Context for LLM = all messages up to and including the user message (with fresh content)
+    const contextMessages = currentMessages.slice(0, latestUserIdx + 1);
 
     await generateResponse(
       character,
-      reloadedMessages,
+      contextMessages,
       async (responseContent, llmResponse?: LLMResponse) => {
         const tokenUsage: MessageTokenUsage | undefined = llmResponse
           ? {
@@ -116,7 +135,7 @@ export function ChatView({ character }: ChatViewProps) {
       },
       llmOptions
     );
-  }, [character, characterFolderPath, messages, isGenerating, isLoading, app.vault, deleteMessagesFrom, generateResponse, addAssistantMessage, parseSuggestedPrompts, saveSuggestions, llmOptions]);
+  }, [character, characterFolderPath, messages, isGenerating, isLoading, reloadMessageContent, deleteMessage, generateResponse, addAssistantMessage, parseSuggestedPrompts, saveSuggestions, llmOptions]);
 
   // Listen for regenerate command from command palette
   useEffect(() => {
@@ -195,19 +214,52 @@ export function ChatView({ character }: ChatViewProps) {
     await deleteMessage(filePath);
   };
 
+  // Regenerate from a specific message (button click)
+  // If user message: keep it, delete assistant after, regenerate
+  // If assistant message: delete it, keep user before, regenerate
+  // IMPORTANT: Reloads user message content from file in case user edited it
   const handleRegenerate = async (msg: DialogueMessageWithContent) => {
     if (!character || !characterFolderPath) return;
 
-    // Delete from this message onwards
-    const remaining = await deleteMessagesFrom(msg.filePath);
+    const currentMessages = [...messages];
+    const msgIndex = currentMessages.findIndex((m) => m.filePath === msg.filePath);
+    if (msgIndex === -1) return;
 
-    // Find last user message to regenerate from
-    const lastUserMsg = remaining.filter((m) => m.role === 'user').pop();
-    if (!lastUserMsg) return;
+    let contextMessages: DialogueMessageWithContent[];
+
+    if (msg.role === 'user') {
+      // User message: delete assistant after it (if exists), keep user
+      const assistantAfter = currentMessages[msgIndex + 1];
+      if (assistantAfter && assistantAfter.role === 'assistant') {
+        await deleteMessage(assistantAfter.filePath);
+      }
+      // Reload user message content from file (in case user edited it)
+      const freshContent = await reloadMessageContent(msg.filePath);
+      if (freshContent) {
+        currentMessages[msgIndex].content = freshContent;
+      }
+      contextMessages = currentMessages.slice(0, msgIndex + 1);
+    } else {
+      // Assistant message: delete it, context is everything before
+      await deleteMessage(msg.filePath);
+      contextMessages = currentMessages.slice(0, msgIndex);
+      // Reload last user message content
+      const lastUserIdx = contextMessages.findLastIndex((m) => m.role === 'user');
+      if (lastUserIdx !== -1) {
+        const freshContent = await reloadMessageContent(contextMessages[lastUserIdx].filePath);
+        if (freshContent) {
+          contextMessages[lastUserIdx].content = freshContent;
+        }
+      }
+    }
+
+    // Need at least one user message to regenerate
+    const hasUserMsg = contextMessages.some((m) => m.role === 'user');
+    if (!hasUserMsg) return;
 
     await generateResponse(
       character,
-      remaining,
+      contextMessages,
       async (responseContent, llmResponse?: LLMResponse) => {
         const tokenUsage: MessageTokenUsage | undefined = llmResponse
           ? {
@@ -310,22 +362,17 @@ export function ChatView({ character }: ChatViewProps) {
                   <div className="mianix-message-name">{character?.name}</div>
                 )}
 
-                {msg.role === 'user' ? (
-                  // User message: show content directly
-                  <div className="mianix-message-text">{msg.content}</div>
-                ) : (
-                  // Assistant message: truncated preview (40 chars for mobile)
-                  <div className="mianix-message-link-container">
-                    <button
-                      className="mianix-message-link"
-                      onClick={() => openMessageFile(msg.filePath)}
-                      title="Click to open in editor"
-                    >
-                      📄 {msg.content.slice(0, 40)}
-                      {msg.content.length > 40 ? '...' : ''}
-                    </button>
-                  </div>
-                )}
+                {/* Both user and assistant: truncated preview with link to file */}
+                <div className="mianix-message-link-container">
+                  <button
+                    className={`mianix-message-link ${msg.role}`}
+                    onClick={() => openMessageFile(msg.filePath)}
+                    title="Click to open in editor"
+                  >
+                    {msg.role === 'user' ? '✏️' : '📄'} {msg.content.slice(0, 50)}
+                    {msg.content.length > 50 ? '...' : ''}
+                  </button>
+                </div>
 
                 <div className="mianix-message-footer">
                   <span className="mianix-message-time">
