@@ -30,10 +30,12 @@ export interface LoadedPresets {
   outputFormatPrompt: string;
 }
 
-/** Context for LLM including memories */
+/** Context for LLM including memories and lorebook */
 export interface LLMContext {
   /** Retrieved memories from BM25 search (formatted string) */
   relevantMemories?: string;
+  /** Active lorebook entries (formatted string) */
+  lorebookContext?: string;
 }
 
 /** Token usage info */
@@ -93,7 +95,16 @@ export class LlmService {
   }
 
   /**
-   * Build system prompt from character card + presets + memories
+   * Build system prompt from character card + presets + memories + lorebook
+   *
+   * Context injection order (affects LLM attention):
+   * 1. Multi-mode roleplay prompt (persona system)
+   * 2. Lorebook entries (world info - injected before character for background)
+   * 3. Character information (name, description, personality, scenario)
+   * 4. Long-term memories (BM25 search results)
+   * 5. Output format instructions
+   *
+   * Note: Items closer to the end have stronger influence on responses.
    */
   buildSystemPrompt(
     character: CharacterCardWithPath,
@@ -106,7 +117,13 @@ export class LlmService {
     // 1. Multi-mode roleplay prompt (persona system)
     parts.push(presets.multiModePrompt);
 
-    // 2. Character card info
+    // 2. Lorebook entries (world info, injected before character for context)
+    if (context?.lorebookContext) {
+      parts.push('\n\n---\n## World Information\n');
+      parts.push(context.lorebookContext);
+    }
+
+    // 3. Character card info
     parts.push('\n\n---\n## Character Information\n');
     parts.push(`**Name:** ${character.name}`);
 
@@ -122,14 +139,14 @@ export class LlmService {
       parts.push(`\n**Scenario:** ${character.scenario}`);
     }
 
-    // 3. Long-term memories (from BM25 search)
+    // 4. Long-term memories (from BM25 search)
     if (context?.relevantMemories) {
       parts.push('\n\n---\n## Long-term Memory\n');
       parts.push('**Thông tin quan trọng từ các cuộc trò chuyện trước:**\n');
       parts.push(context.relevantMemories);
     }
 
-    // 4. Output format with responseLength
+    // 5. Output format with responseLength
     const outputFormat = presets.outputFormatPrompt.replace(
       '${responseLength}',
       llmOptions.responseLength.toString()

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { useApp } from '../../context/app-context';
 import { MessageInput } from './MessageInput';
 import { LLMOptionsPanel } from './LLMOptionsPanel';
+import { LorebookIndicator } from './LorebookIndicator';
 import { useDialogue } from '../../hooks/use-dialogue';
 import { useLlm } from '../../hooks/use-llm';
 import type { LLMResponse } from '../../services/llm-service';
@@ -307,11 +308,17 @@ export function ChatView({ character }: ChatViewProps) {
             )}
             <span className="mianix-chat-name">{character.name}</span>
           </div>
-          <LLMOptionsPanel
-            options={llmOptions}
-            onChange={updateLLMOptions}
-            disabled={isBusy}
-          />
+          <div className="mianix-chat-header-actions">
+            <LorebookIndicator
+              characterFolderPath={characterFolderPath}
+              recentMessages={messages.map(m => m.content)}
+            />
+            <LLMOptionsPanel
+              options={llmOptions}
+              onChange={updateLLMOptions}
+              disabled={isBusy}
+            />
+          </div>
         </div>
       )}
 

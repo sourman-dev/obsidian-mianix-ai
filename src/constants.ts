@@ -9,3 +9,6 @@ export const CHARACTERS_FOLDER = `${MIANIX_BASE_FOLDER}/character-cards`;
 
 /** Presets storage folder */
 export const PRESETS_FOLDER = `${MIANIX_BASE_FOLDER}/presets`;
+
+/** Shared lorebooks storage folder */
+export const LOREBOOKS_FOLDER = `${MIANIX_BASE_FOLDER}/lorebooks`;

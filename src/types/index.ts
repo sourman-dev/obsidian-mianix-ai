@@ -41,6 +41,10 @@ export interface MianixSettings {
   /** Enable memory extraction after each response */
   enableMemoryExtraction: boolean;
 
+  // === Lorebook settings ===
+  /** Number of recent messages to scan for lorebook keywords */
+  lorebookScanDepth: number;
+
   // === Legacy fields (kept for backward compatibility until Phase 2 migration) ===
   /** Main LLM config - will be migrated to providers[] in Phase 2 */
   llm: LLMProviderConfig;
@@ -68,6 +72,7 @@ export const DEFAULT_SETTINGS: MianixSettings = {
     modelName: 'gpt-4o-mini',
   },
   enableMemoryExtraction: false,
+  lorebookScanDepth: 5,
 };
 
 /** Character card frontmatter */

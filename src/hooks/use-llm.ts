@@ -4,6 +4,7 @@ import { LlmService, type LLMContext, type LLMResponse } from '../services/llm-s
 import { PresetService } from '../services/preset-service';
 import { DialogueService } from '../services/dialogue-service';
 import { MemoryExtractionService } from '../services/memory-extraction-service';
+import { LorebookService } from '../services/lorebook-service';
 import { isMultiProviderConfigured } from '../utils/provider-resolver';
 import { DEFAULT_LLM_OPTIONS } from '../presets';
 import type {
@@ -27,6 +28,7 @@ export function useLlm() {
   const llmService = useMemo(() => new LlmService(settings), [settings]);
   const presetService = useMemo(() => new PresetService(app), [app]);
   const dialogueService = useMemo(() => new DialogueService(app), [app]);
+  const lorebookService = useMemo(() => new LorebookService(app), [app]);
 
   /**
    * Check if LLM is properly configured
@@ -69,7 +71,7 @@ export function useLlm() {
           .reverse()
           .find((m) => m.role === 'user');
 
-        // Build context with BM25 memory search
+        // Build context with BM25 memory search + lorebook
         const context: LLMContext = {};
         if (lastUserMessage) {
           const relevantMemories = await dialogueService.searchMemories(
@@ -80,6 +82,17 @@ export function useLlm() {
           if (relevantMemories) {
             context.relevantMemories = relevantMemories;
           }
+        }
+
+        // Get active lorebook entries based on recent message content
+        const recentContent = messages.slice(-settings.lorebookScanDepth).map(m => m.content);
+        const activeEntries = await lorebookService.getActiveEntries(
+          character.folderPath,
+          recentContent,
+          settings.lorebookScanDepth
+        );
+        if (activeEntries.length > 0) {
+          context.lorebookContext = lorebookService.formatForContext(activeEntries);
         }
 
         // Use only recent messages (not all history)
@@ -124,7 +137,7 @@ export function useLlm() {
         setStreamingContent('');
       }
     },
-    [llmService, presetService, dialogueService, settings, isConfigured]
+    [llmService, presetService, dialogueService, lorebookService, settings, isConfigured]
   );
 
   /**

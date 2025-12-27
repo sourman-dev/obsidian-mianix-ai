@@ -138,6 +138,7 @@ export function migrateSettings(data: unknown): MianixSettings {
       extraction: extractionDefault,
     },
     enableMemoryExtraction: old.enableMemoryExtraction ?? false,
+    lorebookScanDepth: 5,
     // Keep legacy fields for backward compatibility with existing code
     llm: old.llm ?? {
       baseUrl: 'https://api.openai.com/v1',
@@ -160,6 +161,7 @@ export function getDefaultSettings(): MianixSettings {
       text: { providerId: '', model: '' },
     },
     enableMemoryExtraction: false,
+    lorebookScanDepth: 5,
     llm: {
       baseUrl: 'https://api.openai.com/v1',
       apiKey: '',
