@@ -1,6 +1,6 @@
 {
   "name": "talevault-ai",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Obsidian roleplay plugin with AI character cards",
   "main": "main.js",
   "scripts": {
