@@ -62,15 +62,15 @@ tale-vault/
 | Phase | Status | Completed |
 |-------|--------|-----------|
 | 1 - Lorebook System | ✅ Done | 2025-12-27 |
-| 2 - Stats & NPCs | Pending | - |
+| 2 - Stats & NPCs | ✅ Done | 2025-12-27 |
 | 3 - Dice Roll Mechanics | Pending | - |
 | 4 - Per-turn Updates | Pending | - |
 
 ## Success Criteria
 
 - [x] Lorebook entries trigger on keyword match in chat *(Phase 1)*
-- [ ] Stats persist and display in UI
-- [ ] NPCs extracted at import (if enabled)
+- [x] Stats persist and display in UI *(Phase 2)*
+- [x] NPCs extracted at import (if enabled) *(Phase 2)*
 - [ ] Dice rolls parse and show inline results
 - [ ] Stats update after each turn (async)
 

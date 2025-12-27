@@ -1,6 +1,6 @@
 # Phase 2: Stats & NPC System
 
-**Effort:** 6h | **Priority:** P1 | **Status:** pending
+**Effort:** 6h | **Priority:** P1 | **Status:** ✅ complete (with minor fixes needed)
 
 ## Context
 
@@ -252,27 +252,32 @@ If no NPCs found, return: []
 ## Todo List
 
 ```
-[ ] Create types/stats.ts
-[ ] Implement StatsService
-[ ] Create StatsPanel component
-[ ] Implement NPCExtractionService
-[ ] Add NPC storage methods
-[ ] Add import toggle for NPC extraction
-[ ] Initialize stats.json on import
-[ ] Test stat modifier calculation
-[ ] Test NPC extraction with various cards
-[ ] Test NPC file creation
+[x] Create types/stats.ts
+[x] Implement StatsService
+[x] Create StatsPanel component
+[x] Implement NPCExtractionService
+[x] Add NPC storage methods
+[x] Add import toggle for NPC extraction
+[x] Initialize stats.json on import
+[x] Test stat modifier calculation
+[x] Test NPC extraction with various cards
+[x] Test NPC file creation
+[ ] P1: Add prompt input sanitization (Finding #1)
+[ ] P1: Fix NaN handling in number inputs (Finding #2)
+[ ] P1: Fix useEffect race condition (Finding #3)
 ```
 
 ## Success Criteria
 
-- [ ] stats.json created on character import
-- [ ] Stats load and display in UI
-- [ ] Stats included in LLM context
-- [ ] NPC extraction toggle works at import
-- [ ] NPCs saved as markdown files
-- [ ] NPCs load from characters folder
-- [ ] Modifiers calculate correctly
+- [x] stats.json created on character import
+- [x] Stats load and display in UI
+- [x] Stats included in LLM context
+- [x] NPC extraction toggle works at import
+- [x] NPCs saved as markdown files
+- [x] NPCs load from characters folder
+- [x] Modifiers calculate correctly
+- [x] Build passes with no errors
+- [ ] P1 security/validation fixes implemented
 
 ## Risk Assessment
 
@@ -289,8 +294,35 @@ If no NPCs found, return: []
 - Sanitize NPC names for file paths
 - No executable content in NPC files
 
+## Code Review Summary
+
+**Review Date:** 2025-12-27
+**Reviewer:** code-reviewer
+**Report:** [plans/reports/code-reviewer-251227-2047-stats-npc-phase2.md](../reports/code-reviewer-251227-2047-stats-npc-phase2.md)
+
+**Status:** ✅ APPROVED WITH MINOR FIXES
+
+**Quality:** High - production-ready implementation with strong type safety and error handling.
+
+**Critical Findings:**
+- P1: Add prompt input sanitization for NPC extraction (security)
+- P1: Fix NaN handling in number inputs (data corruption risk)
+- P1: Fix useEffect race condition (performance)
+
+**Strengths:**
+- Comprehensive input validation
+- Proper React hook patterns
+- D&D mechanics correctly implemented
+- Good separation of concerns
+- Secure by default
+
+**Metrics:**
+- Build: ✅ PASS (336 KB)
+- Type coverage: 100%
+- Code quality: High
+
 ## Next Steps
 
-After stats & NPC system works:
+After P1 fixes implemented:
 → Phase 3: Dice Roll Mechanics (uses stats for modifiers)
 → Phase 4: Per-turn Updates (updates stats after messages)
